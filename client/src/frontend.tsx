@@ -8,11 +8,23 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { App } from "./App";
+import {createBrowserRouter, RouterProvider} from "react-router";
+import Login from "@/Login.tsx";
 
 const elem = document.getElementById("root")!;
 const app = (
   <StrictMode>
-    <App />
+    <RouterProvider router={createBrowserRouter([
+        {
+            path: "/",
+            element: <App/>
+        },
+        {
+            path: "login",
+            element: <Login/>
+        }
+      ]
+    )}/>
   </StrictMode>
 );
 

@@ -1,3 +1,4 @@
+using be;
 using LinqToDB;
 using LinqToDB.Data;
 
@@ -10,4 +11,6 @@ public class Database: DataConnection
     {
         
     }
+    
+    public ITable<User> users => this.GetTable<User>();
 }
