@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <ItemGroup>
+      <ProjectReference Include="..\be\be.csproj" />
+      <ProjectReference Include="..\db\db.csproj" />
+    </ItemGroup>
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+      <UserSecretsId>bb98716d-baee-405a-9a2b-0d75ebf69bd1</UserSecretsId>
+  </PropertyGroup>
+
+</Project>
