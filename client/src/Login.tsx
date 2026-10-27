@@ -1,17 +1,18 @@
 import {useState} from "react";
+import {useNavigate} from "react-router";
 import {LoginClient, UserDTO} from "@/api/Api.ts";
 
 const Login = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
+    const navigate = useNavigate();
 
     const login = async () => {
         const user_dto = new UserDTO({username: username, password: password});
         try {
             const result = await new LoginClient().login(user_dto);
-            setMessage(`Logged in as ${result}`);
-            console.log(message)
+            navigate("/", {state: {username: result}});
         } catch {
             setMessage("Check if username and password are correct");
         }

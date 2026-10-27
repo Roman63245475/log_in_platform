@@ -31,4 +31,10 @@ public class UserService
         }
         return user.username;
     }
+
+    public async Task<List<ClientUserDTO>> getAllUsers()
+    {
+        var users = await db.users.ToListAsync();
+        return users.Select(u => new ClientUserDTO{id = u.id, username = u.username}).ToList();
+    }
 }

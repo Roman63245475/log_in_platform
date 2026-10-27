@@ -57,6 +57,58 @@ export class LoginClient {
     }
 }
 
+export class UserClient {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : window as any;
+        this.baseUrl = baseUrl ?? "http://localhost:5056";
+    }
+
+    users(): Promise<ClientUserDTO[]> {
+        let url_ = this.baseUrl + "/users";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processUsers(_response);
+        });
+    }
+
+    protected processUsers(response: Response): Promise<ClientUserDTO[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ClientUserDTO.fromJS(item));
+            }
+            else {
+                result200 = null as any;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ClientUserDTO[]>(null as any);
+    }
+}
+
 export class UserDTO implements IUserDTO {
     username?: string;
     password?: string;
@@ -95,6 +147,46 @@ export class UserDTO implements IUserDTO {
 export interface IUserDTO {
     username?: string;
     password?: string;
+}
+
+export class ClientUserDTO implements IClientUserDTO {
+    id?: number;
+    username?: string;
+
+    constructor(data?: IClientUserDTO) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.username = _data["username"];
+        }
+    }
+
+    static fromJS(data: any): ClientUserDTO {
+        data = typeof data === 'object' ? data : {};
+        let result = new ClientUserDTO();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["username"] = this.username;
+        return data;
+    }
+}
+
+export interface IClientUserDTO {
+    id?: number;
+    username?: string;
 }
 
 export class ApiException extends Error {

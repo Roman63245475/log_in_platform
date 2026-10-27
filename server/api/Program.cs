@@ -26,6 +26,7 @@ builder.Services.AddScoped<Database>(
     _ => DatabaseConfiguration.Create(connection_string)
 );
 builder.Services.AddScoped<LoginController>();
+builder.Services.AddScoped<UserController>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddControllers();
 var app = builder.Build();
