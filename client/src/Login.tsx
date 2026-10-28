@@ -1,6 +1,6 @@
 import {useState} from "react";
 import {useNavigate} from "react-router";
-import {LoginClient, UserDTO} from "@/api/Api.ts";
+import {Api} from "@/api/Api.ts";
 
 const Login = () => {
     const [username, setUsername] = useState("");
@@ -9,10 +9,10 @@ const Login = () => {
     const navigate = useNavigate();
 
     const login = async () => {
-        const user_dto = new UserDTO({username: username, password: password});
         try {
-            const result = await new LoginClient().login(user_dto);
-            navigate("/", {state: {username: result}});
+            const result = await new Api().login.loginLogin({username, password});
+            localStorage.setItem("authToken", result.data);
+            navigate("/", {state: {username}});
         } catch {
             setMessage("Check if username and password are correct");
         }
