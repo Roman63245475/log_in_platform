@@ -1,7 +1,8 @@
 ﻿using be;
+using be.Authorization;
 using db;
+using LinqToDB;
 using LinqToDB.Async;
-using LinqToDB.Internal.DataProvider.Firebird;
 using Microsoft.AspNetCore.Identity;
 
 namespace service;
@@ -9,10 +10,12 @@ namespace service;
 public class UserService
 {
     private Database db;
+    private readonly IAuthorizationService authorizationService;
 
-    public UserService(Database db)
+    public UserService(Database db, IAuthorizationService authorizationService)
     {
         this.db = db;
+        this.authorizationService = authorizationService;
     }
 
     public async Task<string> login(User user)
@@ -29,12 +32,31 @@ public class UserService
         {
             throw new InvalidDataException("Check if email and password are correct");
         }
-        return user.username;
+        
+        return authorizationService.GenerateJwtToken(usr);
     }
 
     public async Task<List<ClientUserDTO>> getAllUsers()
     {
         var users = await db.users.ToListAsync();
         return users.Select(u => new ClientUserDTO{id = u.id, username = u.username}).ToList();
+    }
+
+    public void register(User user)
+    {
+        
+        if (user.username == null)
+        {
+            throw new InvalidDataException("username is required");
+        }
+
+        if (user.password == null)
+        {
+            throw new InvalidDataException("Password is required");
+        }
+        
+        var password_hasher = new PasswordHasher<User>();
+        user.password = password_hasher.HashPassword(user, user.password);
+        db.Insert(user);
     }
 }
