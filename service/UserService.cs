@@ -41,21 +41,27 @@ public class UserService
         return users.Select(u => new ClientUserDTO{id = u.id, username = u.username}).ToList();
     }
 
-    public void register(User user)
+    public void register(string username, string rawPassword)
     {
         
-        if (user.username == null)
+        if (username == null)
         {
             throw new InvalidDataException("username is required");
         }
 
-        if (user.password == null)
+        if (rawPassword == null)
         {
             throw new InvalidDataException("Password is required");
         }
+
+        var newUser = new User {
+            username = username,
+            role_id = UserRole.User
+        };
         
         var password_hasher = new PasswordHasher<User>();
-        user.password = password_hasher.HashPassword(user, user.password);
-        db.Insert(user);
+        string hashed_pass = password_hasher.HashPassword(newUser, rawPassword);
+        newUser.password_hash = hashed_pass;
+        db.Insert(newUser);
     }
 }

@@ -291,14 +291,35 @@ export class Api<
      * @tags Login
      * @name LoginLogin
      * @request POST:/login
+     * @secure
      */
     loginLogin: (data: UserDTO, params: RequestParams = {}) =>
       this.request<string, any>({
         path: `/login`,
         method: "POST",
         body: data,
+        secure: true,
         type: ContentType.Json,
         format: "json",
+        ...params,
+      }),
+  };
+  register = {
+    /**
+     * No description
+     *
+     * @tags Login
+     * @name LoginRegister
+     * @request POST:/register
+     * @secure
+     */
+    loginRegister: (data: UserDTO, params: RequestParams = {}) =>
+      this.request<Blob, any>({
+        path: `/register`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
         ...params,
       }),
   };
@@ -309,11 +330,13 @@ export class Api<
      * @tags User
      * @name UserUsers
      * @request GET:/users
+     * @secure
      */
     userUsers: (params: RequestParams = {}) =>
       this.request<ClientUserDTO[], any>({
         path: `/users`,
         method: "GET",
+        secure: true,
         format: "json",
         ...params,
       }),
