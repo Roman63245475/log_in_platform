@@ -13,6 +13,7 @@ public static class DatabaseConfiguration
         var builder = new FluentMappingBuilder(mappingSchema);
         
         RegularUserMapping.Configure(builder);
+        RoleMapping.Configure(builder);
 
         builder.Build();
 

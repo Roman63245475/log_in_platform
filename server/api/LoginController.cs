@@ -22,7 +22,7 @@ public class LoginController : ControllerBase
         return Ok(await userService.login(user_dto.username, user_dto.password));
     }
     
-    [AllowAnonymous]
+    [Authorize(Roles = "Admin, SuperUser")]
     [HttpPost("register")]
     [Produces("application/json")]
     public IActionResult register([FromBody] UserDTO user_dto)

@@ -21,4 +21,9 @@ public class UserController : ControllerBase
     {
         return await userService.getAllUsers();
     }
+
+    [HttpGet("users_role")]
+    public async Task<List<ClientUserDTO>> users_role([FromQuery] string role) {
+        return await userService.GetAllUsersWithRole(role);
+    }
 }

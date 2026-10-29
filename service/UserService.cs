@@ -37,8 +37,7 @@ public class UserService
 
     public async Task<List<ClientUserDTO>> getAllUsers()
     {
-        var users = await db.users.ToListAsync();
-        return users.Select(u => new ClientUserDTO{id = u.id, username = u.username}).ToList();
+        return await db.users.Join(db.roles, u => u.role_id, r => r.id, (u, r) =>  new ClientUserDTO { id = u.id, username = u.username, role_name = r.role_name} ).ToListAsync();
     }
 
     public void register(string username, string rawPassword)
@@ -56,12 +55,17 @@ public class UserService
 
         var newUser = new User {
             username = username,
-            role_id = UserRole.User
+            role_id = (int)UserRole.User
         };
         
         var password_hasher = new PasswordHasher<User>();
         string hashed_pass = password_hasher.HashPassword(newUser, rawPassword);
         newUser.password_hash = hashed_pass;
         db.Insert(newUser);
+    }
+
+    public async Task<List<ClientUserDTO>> GetAllUsersWithRole(string role) {
+        return await db.users.Join(db.roles, u => u.role_id, r => r.id,
+            (u, r) => new ClientUserDTO { id = u.id, username = u.username, role_name = r.role_name}).Where(dto => dto.role_name == role).ToListAsync();
     }
 }
