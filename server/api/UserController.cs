@@ -1,20 +1,22 @@
 using be;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using service;
 
 namespace api;
 
-public class UserController
+[ApiController]
+[Route("")]
+[Authorize]
+public class UserController : ControllerBase
 {
-    
-    private UserService userService;
+    private readonly UserService userService;
 
     public UserController(UserService userService)
     {
         this.userService = userService;
     }
-
-    [HttpGet(nameof(users))]
+    [HttpGet("users")]
     public async Task<List<ClientUserDTO>> users()
     {
         return await userService.getAllUsers();
