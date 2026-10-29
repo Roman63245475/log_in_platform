@@ -2,7 +2,7 @@ import "./index.css";
 import {useEffect, useState} from "react";
 import {useLocation} from "react-router";
 import UpBar from "@/UpBar.tsx";
-import {ClientUserDTO, UserClient} from "@/api/Api.ts";
+import {Api, type ClientUserDTO} from "@/api/Api.ts";
 
 export function App() {
   const location = useLocation();
@@ -10,8 +10,12 @@ export function App() {
   const [users, setUsers] = useState<ClientUserDTO[]>([]);
 
   useEffect(() => {
-    if (!username) return;
-    new UserClient().users().then(setUsers);
+    const token = localStorage.getItem("authToken");
+    if (!username || !token) return;
+    const api = new Api({
+      baseApiParams: {headers: {Authorization: `Bearer ${token}`}},
+    });
+    api.users.userUsers().then(result => setUsers(result.data));
   }, [username]);
 
   return (

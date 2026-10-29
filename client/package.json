@@ -7,7 +7,8 @@
     "dev": "bun --hot src/index.ts",
     "generate-api": "nswag openapi2tsclient /input:http://localhost:5056/swagger/v1/swagger.json /output:src/Api.ts /template:Fetch",
     "build": "bun build ./src/index.html --outdir=dist --sourcemap --target=browser --minify --define:process.env.NODE_ENV='\"production\"' --env='BUN_PUBLIC_*'",
-    "start": "NODE_ENV=production bun src/index.ts"
+    "start": "NODE_ENV=production bun src/index.ts",
+    "gen-api": "bunx swagger-typescript-api generate -p http://localhost:5056/swagger/v1/swagger.json -o ./src/api -n API.ts"
   },
   "dependencies": {
     "react": "^19",

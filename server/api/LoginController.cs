@@ -1,4 +1,5 @@
 using be;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using service;
 
@@ -6,18 +7,27 @@ namespace api;
 
 public class LoginController
 {
-    
-    private UserService userService;
+    private readonly UserService userService;
 
     public LoginController(UserService userService)
     {
         this.userService = userService;
     }
-
-    [HttpPost(nameof(login))]
+    
+    [AllowAnonymous]
+    [HttpPost("login")]
     [Produces("application/json")]
-    public async Task<string> login([FromBody] UserDTO user_dto)
+    public async Task<ActionResult<string>> login([FromBody] UserDTO user_dto)
     {
-        return await userService.login(user_dto.username, user_dto.password);
+        
+        return Ok(await userService.login(user_dto.username, user_dto.password));
+    }
+    [AllowAnonymous]
+    [HttpPost("register")]
+    [Produces("application/json")]
+    public IActionResult register([FromBody] UserDTO user_dto)
+    {
+        userService.register(new User{username = user_dto.username, password = user_dto.password});
+        return Ok();
     }
 }
