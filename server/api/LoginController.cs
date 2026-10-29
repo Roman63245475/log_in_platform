@@ -18,6 +18,6 @@ public class LoginController
     [Produces("application/json")]
     public async Task<string> login([FromBody] UserDTO user_dto)
     {
-        return await userService.login(new User{username = user_dto.username, password = user_dto.password});
+        return await userService.login(user_dto.username, user_dto.password);
     }
 }

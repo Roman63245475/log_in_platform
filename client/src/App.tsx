@@ -20,6 +20,7 @@ export function App() {
       {username && (
         <>
           <p>Logged in as {username}</p>
+          <p>Users list:</p>
           <ul>
             {users.map(u => <li key={u.id}>{u.username}</li>)}
           </ul>

@@ -15,21 +15,21 @@ public class UserService
         this.db = db;
     }
 
-    public async Task<string> login(User user)
+    public async Task<string> login(string username, string rawPassword)
     {
-        var usr = await db.users.FirstOrDefaultAsync(u => u.username == user.username);
+        var usr = await db.users.FirstOrDefaultAsync(u => u.username == username);
         if (usr == null)
         {
           throw new InvalidDataException("Check if email and password are correct");
         }
 
         var password_hasher = new PasswordHasher<User>();
-        PasswordVerificationResult res = password_hasher.VerifyHashedPassword(usr, usr.password, user.password);
+        PasswordVerificationResult res = password_hasher.VerifyHashedPassword(usr, usr.password_hash, rawPassword);
         if (res == PasswordVerificationResult.Failed)
         {
             throw new InvalidDataException("Check if email and password are correct");
         }
-        return user.username;
+        return usr.username;
     }
 
     public async Task<List<ClientUserDTO>> getAllUsers()
