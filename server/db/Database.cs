@@ -13,4 +13,5 @@ public class Database: DataConnection
     }
     
     public ITable<User> users => this.GetTable<User>();
+    public ITable<Role> roles => this.GetTable<Role>();
 }

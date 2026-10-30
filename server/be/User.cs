@@ -6,14 +6,14 @@ public class User
     public string username { get; set; }
     public string password_hash { get; set; }
     
-    public UserRole role_id { get; set; } = UserRole.User;
-
+    public int role_id { get; set; }
+    
     public User()
     {
         
     }
     
-    public User(int id, string username, string password, UserRole role_id)
+    public User(int id, string username, string password, int role_id)
     {
         this.id = id;
         this.username = username;

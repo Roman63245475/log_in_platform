@@ -19,6 +19,7 @@ export interface ClientUserDTO {
   /** @format int32 */
   id?: number;
   username?: string;
+  role_name?: string;
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -336,6 +337,46 @@ export class Api<
       this.request<ClientUserDTO[], any>({
         path: `/users`,
         method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags User
+     * @name UserDeleteUser
+     * @request DELETE:/users/{id}
+     * @secure
+     */
+    userDeleteUser: (id: number, params: RequestParams = {}) =>
+      this.request<Blob, any>({
+        path: `/users/${id}`,
+        method: "DELETE",
+        secure: true,
+        ...params,
+      }),
+  };
+  usersRole = {
+    /**
+     * No description
+     *
+     * @tags User
+     * @name UserUsersRole
+     * @request GET:/users_role
+     * @secure
+     */
+    userUsersRole: (
+      query?: {
+        role?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<ClientUserDTO[], any>({
+        path: `/users_role`,
+        method: "GET",
+        query: query,
         secure: true,
         format: "json",
         ...params,

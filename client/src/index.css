@@ -33,6 +33,38 @@ body::before {
     background-position: 256px 224px;
   }
 }
+
+.flex-container-v {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.pop-up-bg{
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  inset: 0;
+  background-color: rgb(0 0 0 / 0.11);
+}
+
+p{
+  margin: 0;
+}
+
+h1{
+  margin: 0;
+}
+
+.pop-up{
+  padding: 15px;
+  width: 30%;
+  height: auto;
+  background-color: #3a3a4a;
+  border: 2px #2d2d39 solid;
+}
+
 .app {
   max-width: 1280px;
   margin: 0 auto;
