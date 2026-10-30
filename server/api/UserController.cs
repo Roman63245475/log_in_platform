@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using be;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -26,4 +27,14 @@ public class UserController : ControllerBase
     public async Task<List<ClientUserDTO>> users_role([FromQuery] string role) {
         return await userService.GetAllUsersWithRole(role);
     }
+    
+    [Authorize]
+    [HttpDelete("users/{id}")]
+    public async Task<IActionResult> delete_user([FromRoute] int id) {
+        var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+        await userService.DeleteUser(id, userRole);
+        return Ok();
+    }
+    
+    
 }

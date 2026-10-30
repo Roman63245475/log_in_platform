@@ -341,6 +341,22 @@ export class Api<
         format: "json",
         ...params,
       }),
+
+    /**
+     * No description
+     *
+     * @tags User
+     * @name UserDeleteUser
+     * @request DELETE:/users/{id}
+     * @secure
+     */
+    userDeleteUser: (id: number, params: RequestParams = {}) =>
+      this.request<Blob, any>({
+        path: `/users/${id}`,
+        method: "DELETE",
+        secure: true,
+        ...params,
+      }),
   };
   usersRole = {
     /**

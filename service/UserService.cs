@@ -68,4 +68,12 @@ public class UserService
         return await db.users.Join(db.roles, u => u.role_id, r => r.id,
             (u, r) => new ClientUserDTO { id = u.id, username = u.username, role_name = r.role_name}).Where(dto => dto.role_name == role).ToListAsync();
     }
+
+    public async Task DeleteUser(int id, string userRole) {
+        if (userRole == "3") {
+            await db.users.DeleteAsync(u => u.id == id);
+        }else if (userRole == "2") {
+            await db.users.DeleteAsync(u => u.id == id && u.role_id == 1);
+        }
+    }
 }

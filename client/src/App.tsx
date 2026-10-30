@@ -5,6 +5,7 @@ import UpBar from "@/UpBar.tsx";
 import {Api, type ClientUserDTO} from "@/api/Api.ts";
 import {jwtDecode} from "jwt-decode";
 import {CreateUser} from "@/CreateUser.tsx";
+import {DeletePopup} from "@/DeletePopup.tsx";
 
 export function App() {
   const token = localStorage.getItem("authToken");
@@ -14,7 +15,8 @@ export function App() {
   const [users, setUsers] = useState<ClientUserDTO[]>([]);
 
   const [refresh, setRefresh] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<ClientUserDTO | null>(null);
+  const [createMenuOpen, setCreateMenuOpen] = useState(false);
 
   const logout = () => {
       localStorage.removeItem("authToken");
@@ -46,16 +48,16 @@ export function App() {
     }
 
   }, [token, refresh]);
-
   return (
     <div className="app">
       {token ? (
         <>
-        {menuOpen && (<CreateUser menuOpen={menuOpen} setMenuOpen={setMenuOpen} onSuccess={() => setRefresh(!refresh)} />)}
+        {createMenuOpen && (<CreateUser menuOpen={createMenuOpen} setMenuOpen={setCreateMenuOpen} onSuccess={() => setRefresh(!refresh)} />)}
+          {userToDelete && (<DeletePopup userToDelete={userToDelete} setUserToDelete={setUserToDelete} onSuccess={() => setRefresh(!refresh)} />)}
           <p>Logged in as {authUser.username}</p>
           <button onClick={logout}>Log out</button>
           {authUser.role != "1" && (
-            <button onClick={() => setMenuOpen(true)}>Create User</button>
+            <button onClick={() => setCreateMenuOpen(true)}>Create User</button>
           )
           }
           <p>Users list:</p>
@@ -65,7 +67,7 @@ export function App() {
               {authUser.role != "1" && (
                   <>
                     <button>Edit</button>
-                    <button>Delete</button>
+                    <button onClick={() => {setUserToDelete(u)}}>Delete</button>
                   </>
               )}
             </li>)}
