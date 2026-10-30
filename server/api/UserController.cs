@@ -20,19 +20,37 @@ public class UserController : ControllerBase
     [HttpGet("users")]
     public async Task<List<ClientUserDTO>> users()
     {
-        return await userService.getAllUsers();
+        var user_role = User.FindFirst(ClaimTypes.Role)?.Value;
+        var role = Enum.Parse<UserRole>(user_role);
+        return await userService.getAllUsers(role);
     }
 
-    [HttpGet("users_role")]
-    public async Task<List<ClientUserDTO>> users_role([FromQuery] string role) {
-        return await userService.GetAllUsersWithRole(role);
-    }
+    // [HttpGet("users_role")]
+    // public async Task<List<ClientUserDTO>> users_role([FromQuery] string role) {
+    //     return await userService.GetAllUsersWithRole(role);
+    // }
     
     [Authorize]
     [HttpDelete("users/{id}")]
     public async Task<IActionResult> delete_user([FromRoute] int id) {
-        var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
-        await userService.DeleteUser(id, userRole);
+        var user_role = User.FindFirst(ClaimTypes.Role)?.Value;
+        if (!Enum.TryParse<UserRole>(user_role, out var deleter_role))
+        {
+            return Forbid();
+        }
+
+        try
+        {
+            await userService.DeleteUser(id, deleter_role);
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Forbid();
+        }
         return Ok();
     }
     

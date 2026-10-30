@@ -6,18 +6,18 @@ public class User
     public string username { get; set; }
     public string password_hash { get; set; }
     
-    public int role_id { get; set; }
+    public UserRole role { get; set; }
     
     public User()
     {
         
     }
     
-    public User(int id, string username, string password, int role_id)
+    public User(int id, string username, string password, UserRole role)
     {
         this.id = id;
         this.username = username;
         this.password_hash = password;
-        this.role_id = role_id;
+        this.role = role;
     }
 }

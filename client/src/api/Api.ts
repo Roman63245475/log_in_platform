@@ -13,13 +13,16 @@
 export interface UserDTO {
   username?: string;
   password?: string;
+  /** @format int32 */
+  role?: number;
 }
 
 export interface ClientUserDTO {
   /** @format int32 */
   id?: number;
   username?: string;
-  role_name?: string;
+  /** @format int32 */
+  role?: number;
 }
 
 export type QueryParamsType = Record<string | number, any>;

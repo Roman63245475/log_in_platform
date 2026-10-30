@@ -35,14 +35,38 @@ public class UserService
         return authorizationService.GenerateJwtToken(usr);
     }
 
-    public async Task<List<ClientUserDTO>> getAllUsers()
+    public async Task<List<ClientUserDTO>> getAllUsers(UserRole role)
     {
-        return await db.users.Join(db.roles, u => u.role_id, r => r.id, (u, r) =>  new ClientUserDTO { id = u.id, username = u.username, role_name = r.role_name} ).ToListAsync();
+        if (role == UserRole.Admin)
+        {
+            return await db.users.Select(u => new ClientUserDTO{id = u.id, username = u.username, role = u.role}).ToListAsync();
+        }
+        else
+        {
+            return await db.users.Where(u => u.role == UserRole.User).Select(u => new ClientUserDTO
+                { id = u.id, username = u.username, role = u.role }).ToListAsync();
+        }
     }
-
-    public void register(string username, string rawPassword)
-    {
         
+    
+
+    // Admin manages everyone, SuperUser manages only regular users, User manages nobody
+    private static bool CanManage(UserRole actor, UserRole target) =>
+        actor == UserRole.Admin ||
+        (actor == UserRole.SuperUser && target == UserRole.User);
+
+    public void register(string username, string rawPassword, UserRole role, UserRole creatorRole)
+    {
+        if (!Enum.IsDefined(role))
+        {
+            throw new InvalidDataException("Unknown role");
+        }
+
+        if (!CanManage(creatorRole, role))
+        {
+            throw new UnauthorizedAccessException("Not allowed to create a user with this role");
+        }
+
         if (username == null)
         {
             throw new InvalidDataException("username is required");
@@ -55,7 +79,7 @@ public class UserService
 
         var newUser = new User {
             username = username,
-            role_id = (int)UserRole.User
+            role = role
         };
         
         var password_hasher = new PasswordHasher<User>();
@@ -64,16 +88,23 @@ public class UserService
         db.Insert(newUser);
     }
 
-    public async Task<List<ClientUserDTO>> GetAllUsersWithRole(string role) {
-        return await db.users.Join(db.roles, u => u.role_id, r => r.id,
-            (u, r) => new ClientUserDTO { id = u.id, username = u.username, role_name = r.role_name}).Where(dto => dto.role_name == role).ToListAsync();
-    }
+    // public async Task<List<ClientUserDTO>> GetAllUsersWithRole(string role) {
+    //     return await db.users.Join(db.roles, u => u.role, r => r.id,
+    //         (u, r) => new ClientUserDTO { id = u.id, username = u.username, role = r.rol}).Where(dto => dto.role_name == role).ToListAsync();
+    // }
 
-    public async Task DeleteUser(int id, string userRole) {
-        if (userRole == "3") {
-            await db.users.DeleteAsync(u => u.id == id);
-        }else if (userRole == "2") {
-            await db.users.DeleteAsync(u => u.id == id && u.role_id == 1);
+    public async Task DeleteUser(int id, UserRole deleterRole) {
+        var target = await db.users.FirstOrDefaultAsync(u => u.id == id);
+        if (target == null)
+        {
+            throw new KeyNotFoundException("User not found");
         }
+
+        if (!CanManage(deleterRole, target.role))
+        {
+            throw new UnauthorizedAccessException("Not allowed to delete this user");
+        }
+
+        await db.users.DeleteAsync(u => u.id == id);
     }
 }

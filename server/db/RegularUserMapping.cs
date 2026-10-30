@@ -11,6 +11,6 @@ public class RegularUserMapping
         builder.Entity<User>().Property(x => x.id).IsIdentity().HasColumnName("id");
         builder.Entity<User>().Property(x => x.username).HasColumnName("username");
         builder.Entity<User>().Property(x => x.password_hash).HasColumnName("password_hash");
-        builder.Entity<User>().Property(x => x.role_id).HasColumnName("role_id");
+        builder.Entity<User>().Property(x => x.role).HasColumnName("role_id");
     }
 }

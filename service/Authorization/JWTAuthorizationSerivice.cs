@@ -19,7 +19,7 @@ public class JWTAuthorizationSerivice(IConfiguration configuration) : IAuthoriza
         {
             new Claim("id", user.id.ToString()),
             new Claim("username", user.username),
-            new Claim("role", user.role_id.ToString())
+            new Claim("role", user.role.ToString())
         };
 
         var token = new JwtSecurityToken(

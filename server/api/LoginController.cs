@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using be;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -27,7 +28,20 @@ public class LoginController : ControllerBase
     [Produces("application/json")]
     public IActionResult register([FromBody] UserDTO user_dto)
     {
-        userService.register(user_dto.username, user_dto.password);
+        var user_role = User.FindFirst(ClaimTypes.Role)?.Value;
+        if (!Enum.TryParse<UserRole>(user_role, out var creator_role))
+        {
+            return Forbid();
+        }
+
+        try
+        {
+            userService.register(user_dto.username, user_dto.password, user_dto.role, creator_role);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Forbid();
+        }
         return Ok();
     }
 }

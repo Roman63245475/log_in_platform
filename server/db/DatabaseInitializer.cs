@@ -11,6 +11,9 @@ public class DatabaseInitializer
         db.CreateTable<User>(
             tableOptions: TableOptions.CreateIfNotExists
         );
+        db.CreateTable<Role>(
+            tableOptions: TableOptions.CreateIfNotExists
+        );
         db.Execute(
             "CREATE UNIQUE INDEX IF NOT EXISTS users_username_unique ON users (username)"
         );
