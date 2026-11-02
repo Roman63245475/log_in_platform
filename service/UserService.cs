@@ -107,4 +107,40 @@ public class UserService
 
         await db.users.DeleteAsync(u => u.id == id);
     }
+
+    public async Task EditUser(int id, string username, UserRole role, UserRole editorRole) {
+        if (string.IsNullOrWhiteSpace(username))
+        {
+            throw new InvalidDataException("username is required");
+        }
+
+        if (!Enum.IsDefined(role))
+        {
+            throw new InvalidDataException("Unknown role");
+        }
+
+        var target = await db.users.FirstOrDefaultAsync(u => u.id == id);
+        if (target == null)
+        {
+            throw new KeyNotFoundException("User not found");
+        }
+
+        // the editor must be allowed to manage both the current and the new role,
+        // so a SuperUser can neither edit higher roles nor promote anyone
+        if (!CanManage(editorRole, target.role) || !CanManage(editorRole, role))
+        {
+            throw new UnauthorizedAccessException("Not allowed to edit this user");
+        }
+
+        if (await db.users.AnyAsync(u => u.username == username && u.id != id))
+        {
+            throw new InvalidDataException("username is already taken");
+        }
+
+        await db.users
+            .Where(u => u.id == id)
+            .Set(u => u.username, username)
+            .Set(u => u.role, role)
+            .UpdateAsync();
+    }
 }

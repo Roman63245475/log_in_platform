@@ -17,6 +17,12 @@ export interface UserDTO {
   role?: number;
 }
 
+export interface EditUserDTO {
+  username?: string;
+  /** @format int32 */
+  role?: number;
+}
+
 export interface ClientUserDTO {
   /** @format int32 */
   id?: number;
@@ -358,6 +364,24 @@ export class Api<
         path: `/users/${id}`,
         method: "DELETE",
         secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags User
+     * @name UserEditUser
+     * @request PUT:/users/{id}
+     * @secure
+     */
+    userEditUser: (id: number, data: EditUserDTO, params: RequestParams = {}) =>
+      this.request<Blob, any>({
+        path: `/users/${id}`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
         ...params,
       }),
   };

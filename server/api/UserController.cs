@@ -53,6 +53,33 @@ public class UserController : ControllerBase
         }
         return Ok();
     }
+
+    [HttpPut("users/{id}")]
+    public async Task<IActionResult> edit_user([FromRoute] int id, [FromBody] EditUserDTO user_dto) {
+        var user_role = User.FindFirst(ClaimTypes.Role)?.Value;
+        if (!Enum.TryParse<UserRole>(user_role, out var editor_role))
+        {
+            return Forbid();
+        }
+
+        try
+        {
+            await userService.EditUser(id, user_dto.username, user_dto.role, editor_role);
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Forbid();
+        }
+        catch (InvalidDataException e)
+        {
+            return BadRequest(e.Message);
+        }
+        return Ok();
+    }
     
     
 }

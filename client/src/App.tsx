@@ -18,6 +18,7 @@ export function App() {
   const [refresh, setRefresh] = useState(false);
   const [userToDelete, setUserToDelete] = useState<ClientUserDTO | null>(null);
   const [createMenuOpen, setCreateMenuOpen] = useState(false);
+  const [userToEdit, setUserToEdit] = useState<ClientUserDTO | null>(null);
 
   const canManage = canManageUsers(authUser.role);
 
@@ -42,7 +43,13 @@ export function App() {
     });
 
     // the server returns only the users visible to the logged-in role
-    api.users.userUsers().then(result => setUsers(result.data));
+    api.users.userUsers()
+      .then(result => setUsers(result.data))
+      .catch(err => {
+        // expired or invalid token
+        if (err.status === 401) logout();
+        else console.error("Failed to load users", err);
+      });
 
   }, [token, refresh]);
   return (
@@ -50,6 +57,7 @@ export function App() {
       {token ? (
         <>
         {createMenuOpen && (<CreateUser menuOpen={createMenuOpen} setMenuOpen={setCreateMenuOpen} onSuccess={() => setRefresh(!refresh)} authRole={authUser.role} />)}
+          {userToEdit && (<CreateUser menuOpen={true} setMenuOpen={() => setUserToEdit(null)} onSuccess={() => setRefresh(!refresh)} authRole={authUser.role} userToEdit={userToEdit} />)}
           {userToDelete && (<DeletePopup userToDelete={userToDelete} setUserToDelete={setUserToDelete} onSuccess={() => setRefresh(!refresh)} />)}
           <p>Logged in as {authUser.username}</p>
           <button onClick={logout}>Log out</button>
@@ -62,7 +70,10 @@ export function App() {
             {users.filter(u => u.username !== authUser.username).map(u =>
               <li key={u.id}>{u.username} Role: {UserRole[u.role!]}
               {canManage && (
-                  <button onClick={() => {setUserToDelete(u)}}>Delete</button>
+                  <>
+                    <button onClick={() => {setUserToEdit(u)}}>Edit</button>
+                    <button onClick={() => {setUserToDelete(u)}}>Delete</button>
+                  </>
               )}
             </li>)}
           </ul>
