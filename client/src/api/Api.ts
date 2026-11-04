@@ -84,9 +84,9 @@ export enum ContentType {
 }
 
 export class HttpClient<SecurityDataType = unknown> {
-  // The API port is published by Docker. Resolve the hostname from the page so
-  // the browser connects to the machine serving the UI, not its own localhost.
-  public baseUrl: string = `${window.location.protocol}//${window.location.hostname}:5056`;
+  // Keep browser requests on the UI origin; the Bun server proxies /api to the
+  // API container. This also works when the public site uses HTTPS.
+  public baseUrl: string = `${window.location.origin}/api`;
   private securityData: SecurityDataType | null = null;
   private securityWorker?: ApiConfig<SecurityDataType>["securityWorker"];
   private abortControllers = new Map<CancelToken, AbortController>();
