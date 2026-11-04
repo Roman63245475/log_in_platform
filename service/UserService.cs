@@ -88,11 +88,6 @@ public class UserService
         db.Insert(newUser);
     }
 
-    // public async Task<List<ClientUserDTO>> GetAllUsersWithRole(string role) {
-    //     return await db.users.Join(db.roles, u => u.role, r => r.id,
-    //         (u, r) => new ClientUserDTO { id = u.id, username = u.username, role = r.rol}).Where(dto => dto.role_name == role).ToListAsync();
-    // }
-
     public async Task DeleteUser(int id, UserRole deleterRole) {
         var target = await db.users.FirstOrDefaultAsync(u => u.id == id);
         if (target == null)

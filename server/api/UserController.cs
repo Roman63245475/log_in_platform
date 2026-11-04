@@ -25,12 +25,6 @@ public class UserController : ControllerBase
         return await userService.getAllUsers(role);
     }
 
-    // [HttpGet("users_role")]
-    // public async Task<List<ClientUserDTO>> users_role([FromQuery] string role) {
-    //     return await userService.GetAllUsersWithRole(role);
-    // }
-    
-    [Authorize]
     [HttpDelete("users/{id}")]
     public async Task<IActionResult> delete_user([FromRoute] int id) {
         var user_role = User.FindFirst(ClaimTypes.Role)?.Value;

@@ -84,7 +84,9 @@ export enum ContentType {
 }
 
 export class HttpClient<SecurityDataType = unknown> {
-  public baseUrl: string = "http://localhost:5056";
+  // The API port is published by Docker. Resolve the hostname from the page so
+  // the browser connects to the machine serving the UI, not its own localhost.
+  public baseUrl: string = `${window.location.protocol}//${window.location.hostname}:5056`;
   private securityData: SecurityDataType | null = null;
   private securityWorker?: ApiConfig<SecurityDataType>["securityWorker"];
   private abortControllers = new Map<CancelToken, AbortController>();
@@ -382,30 +384,6 @@ export class Api<
         body: data,
         secure: true,
         type: ContentType.Json,
-        ...params,
-      }),
-  };
-  usersRole = {
-    /**
-     * No description
-     *
-     * @tags User
-     * @name UserUsersRole
-     * @request GET:/users_role
-     * @secure
-     */
-    userUsersRole: (
-      query?: {
-        role?: string;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<ClientUserDTO[], any>({
-        path: `/users_role`,
-        method: "GET",
-        query: query,
-        secure: true,
-        format: "json",
         ...params,
       }),
   };

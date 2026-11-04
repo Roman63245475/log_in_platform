@@ -1,0 +1,68 @@
+# Docker ignore file - excludes unnecessary files from the build context
+
+# Version control
+.git
+.gitignore
+.gitattributes
+
+# IDE and editors
+.vs
+.vscode
+.idea
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+
+# Build outputs
+bin/
+obj/
+dist/
+node_modules/
+*.o
+*.a
+*.so
+*.exe
+*.dll
+
+# Package managers
+packages/
+.npm
+.yarn
+
+# Testing
+test-results/
+coverage/
+.nyc_output/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Environment and secrets
+.env
+.env.local
+.env.*.local
+appsettings.*.json
+!appsettings.Development.json
+
+# Docker
+.docker
+docker-compose.override.yml
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.circleci/
+
+# OS
+Thumbs.db
+desktop.ini
+
+# Documentation
+README.md
+CHANGELOG.md
+LICENSE

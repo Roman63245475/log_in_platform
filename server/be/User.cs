@@ -13,11 +13,4 @@ public class User
         
     }
     
-    public User(int id, string username, string password, UserRole role)
-    {
-        this.id = id;
-        this.username = username;
-        this.password_hash = password;
-        this.role = role;
-    }
 }
