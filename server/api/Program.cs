@@ -12,18 +12,18 @@ using LinqToDB;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var allowedOrigins = builder.Configuration
+    .GetSection("Cors:AllowedOrigins")
+    .Get<string[]>()
+    ?.Where(origin => !string.IsNullOrWhiteSpace(origin))
+    .ToArray() ?? ["http://localhost:8088"];
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("React", policy =>
     {
         policy
-            .SetIsOriginAllowed(origin =>
-            {
-                if (!Uri.TryCreate(origin, UriKind.Absolute, out var uri))
-                    return false;
-
-                return uri.IsLoopback || uri.Port == 8088;
-            })
+            .WithOrigins(allowedOrigins)
             .AllowAnyHeader()
             .AllowAnyMethod();
     });

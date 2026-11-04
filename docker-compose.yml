@@ -27,6 +27,7 @@ services:
       - JWT__Issuer=sec-api-jwt
       - JWT__Audience=sec-api-jwt
       - JWT__Secret=Roman-is-a-cigan-that-is-the-development-key
+      - Cors__AllowedOrigins__0=${FRONTEND_ORIGIN:-http://localhost:8088}
     depends_on:
       db:
         condition: service_healthy
