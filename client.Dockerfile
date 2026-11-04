@@ -9,6 +9,6 @@ RUN bun install
 COPY client/src ./src
 COPY client/tsconfig.json ./
 
-EXPOSE 3000
+EXPOSE 8088
 
 CMD ["bun", "--hot", "src/index.ts"]

@@ -22,7 +22,7 @@ builder.Services.AddCors(options =>
                 if (!Uri.TryCreate(origin, UriKind.Absolute, out var uri))
                     return false;
 
-                return uri.IsLoopback || uri.Port == 3000;
+                return uri.IsLoopback || uri.Port == 8088;
             })
             .AllowAnyHeader()
             .AllowAnyMethod();
