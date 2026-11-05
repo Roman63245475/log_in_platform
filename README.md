@@ -217,3 +217,15 @@ Using the Firefox browser inside the Client VM on VLAN 570, we accessed the logi
 the application loads and functions properly from the client machine, showing the logged-in user ("romann") and the role-based user list.
 
 <img width="1855" height="1041" alt="image" src="https://github.com/user-attachments/assets/70c3c5eb-5af3-4024-a04b-f336b6a7aea2" />
+
+
+
+
+Final Reflection:
+Technical challenges we encountered: Architecture understanting throughout the team members, not everybody was understanding the desired architecture, even though it was fixed after.
+Things learnt when deploying an application on a server: Creating a vitrual machine with Ubuntu Server, installing all the needed tools like: git, docker, after which running the container.
+If the solution was to be deployed in a real company on company's server we would additionally set up a firewall.
+
+
+Contributors: Roman Yurchenko, Török Dávid, Artem Sapehin.
+Github link: https://github.com/Roman63245475/log_in_platform/
